@@ -6,7 +6,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Conexão com o Banco de Dados usando o nome do serviço no Docker Compose
 const pool = new Pool({
   host: process.env.DB_HOST || 'db',
   user: 'fatec_user',
@@ -15,7 +14,6 @@ const pool = new Pool({
   port: 5432,
 });
 
-// Criar tabela se não existir (SRE mindset: automação de infra)
 const initDb = async () => {
   await pool.query('CREATE TABLE IF NOT EXISTS tarefas (id SERIAL PRIMARY KEY, titulo TEXT)');
 };
@@ -32,4 +30,4 @@ app.post('/tarefas', async (req, res) => {
   res.sendStatus(201);
 });
 
-app.listen(3000, () => console.log('Backend rodando na porta 3000'));
+app.listen(3015, () => console.log('Backend rodando na porta 3015'));
