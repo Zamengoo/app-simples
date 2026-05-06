@@ -18,10 +18,10 @@ services:
     depends_on:
       - db
     ports:
-      - "3015:3015"
+      - "3015:3000"
 
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3015/tarefas"]
+      test: ["CMD", "curl", "-f", "http://localhost:3000/tarefas"]
       interval: 30s
       timeout: 10s
       retries: 3
