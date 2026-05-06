@@ -9,40 +9,40 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Codigo
         uses: actions/checkout@v4
 
-      - name: instalar node
+      - name: Instalar Node
         uses: actions/setup-node@v4
         with: 
           node-version: 24
 
-      - name: gerar artefato
+      - name: Gerar artefato
         run: zip -r app.zip .
 
-      - name: publicar artefato
+      - name: Publicar artefato
         uses: actions/upload-artifact@v4
         with:
           name: app-build
           path: app.zip
-deploy:
-  needs: build
-  runs-on: ubuntu-latest
-  steps:
-    - name: deploy via ssh (appleboy)
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        key: ${{ secrets.SSH_KEY }}
-        script: |
-          cd ~
-          if [ ! -d "zamengo-app" ]; then
-            git clone https://github.com/${{ github.repository }} zamengo-app
-          fi
-          cd zamengo-app
-          git pull origin main
-          docker compose pull
-          docker compose up -d
+
+  deploy: 
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd ~
+            if [ ! -d "zamengo-app" ]; then
+              git clone https://github.com/${{ github.repository }} zamengo-app
+            fi
+            cd zamengo-app
+            git pull origin main
+            docker compose pull
+            docker compose up -d
