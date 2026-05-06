@@ -1,5 +1,32 @@
 name: App Simples
 
+on:
+  push:
+    branches: [ main ]
+  pull_request: 
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Codigo
+        uses: actions/checkout@v4
+
+      - name: instalar node
+        uses: actions/setup-node@v4
+        with: 
+          node-version: 24
+
+      - name: gerar artefato
+        run: zip -r app.zip .
+
+      - name: publicar artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-build
+          path: app.zip
 deploy:
   needs: build
   runs-on: ubuntu-latest
