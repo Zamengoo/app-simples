@@ -3,7 +3,6 @@ name: App Simples
 on:
   push:
     branches: [ main ]
-
   pull_request:
     branches: [ main ]
 
@@ -15,13 +14,19 @@ jobs:
       - name: Checkout código
         uses: actions/checkout@v4
 
+      - name: Cache de Dependências
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
       - name: Instalar Node
         uses: actions/setup-node@v4
         with:
           node-version: 24
 
       - name: Instalar dependências
-        run: npm install
+        run: npm ci
         
       - name: Testar npm
         run: npm test
@@ -37,12 +42,6 @@ jobs:
 
       - name: Verificar vulnerabilidades
         run: npm audit --audit-level=high 
-      
-      - name: Cache de Dependências
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
   quality:
     runs-on: ubuntu-latest
@@ -52,25 +51,25 @@ jobs:
       - name: Checkout código
         uses: actions/checkout@v4
 
+      - name: Cache de Dependências
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
       - name: Instalar Node
         uses: actions/setup-node@v4
         with:
           node-version: 24
 
       - name: Instalar dependências
-        run: npm install
+        run: npm ci
 
       - name: Rodar lint
         run: npm run lint
 
       - name: Rodar Coverage
         run: npm run coverage
-
-      - name: Cache de Dependências
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
   build:
     runs-on: ubuntu-latest
@@ -80,13 +79,19 @@ jobs:
       - name: Checkout código
         uses: actions/checkout@v4
 
+      - name: Cache de Dependências
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
       - name: Instalar Node
         uses: actions/setup-node@v4
         with:
           node-version: 24
 
       - name: Instalar dependências
-        run: npm install
+        run: npm ci
 
       - name: Gerar artefato
         run: zip -r app.zip .
@@ -96,13 +101,6 @@ jobs:
         with:
           name: app-build
           path: app.zip
-      
-      - name: Cache de Dependências
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-
 
   deploy: 
     needs: build
